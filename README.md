@@ -1,41 +1,154 @@
-VoiceFlow: Desktop Speech-to-Text
-Building a faster, lighter way to capture ideas.
-The "Why" behind the Project
-Most voice-to-text tools are either buried in web browsers or are heavy, resource-hungry desktop apps. I built VoiceFlow to be a lightweight alternative that stays out of your way. Using Tauri, I was able to create a desktop experience that feels native but uses the modern web stack I'm comfortable with (React + TypeScript).
+# VoiceFlow: Desktop Speech-to-Text  
+**Building a faster, lighter way to capture ideas**
 
-My Tech Stack
-The Skeleton: Tauri — Chosen specifically because I wanted a tiny binary size. Electron apps can be 100MB+; this app stays around 10MB.
+---
 
-The Brains: Deepgram — I used their Nova-2 model because the latency is incredible. It feels like the app is typing as you speak.
+## The “Why” Behind the Project
 
-The Face: React — For a snappy UI and easy state management.
+Most voice-to-text tools are either:
+- Buried inside web browsers, or  
+- Heavy, resource-hungry desktop applications  
 
-Architectural Decisions (The "Human" Version)
-1. Why Push-to-Talk (PTT)?
-I decided on a "Hold-to-Speak" mechanism rather than a simple On/Off toggle.
+I built **VoiceFlow** as a lightweight alternative that stays out of your way.
 
-The Reason: It’s more intentional. It prevents the app from accidentally transcribing background noise or private conversations. It also saves on API costs by only sending audio when the user specifically wants to record.
+By using **Tauri**, I was able to create a desktop experience that feels native while still relying on the modern web stack I’m most productive with (**React + TypeScript**).
 
-2. Keeping Audio in the Frontend
-I had a choice: process audio in Rust or in JavaScript.
+---
 
-The Reason: I chose JavaScript's MediaRecorder. Passing high-speed audio data from the "web view" to the "Rust backend" can sometimes cause a tiny bit of lag. By connecting the frontend directly to Deepgram’s WebSocket, the transcription feels instant.
+## Tech Stack
 
-3. Respecting Privacy (Hardware Cleanup)
-I noticed that sometimes when you stop recording, the little orange "Microphone in use" dot stays on in the taskbar.
+### The Skeleton — **Tauri**
+Chosen for its tiny binary size.
 
-The Reason: I added a specific "cleanup" step that manually kills the microphone tracks the moment you let go of the button. It’s a small detail, but it builds trust with the user.
+- Electron apps: **100MB+**
+- VoiceFlow: **~10MB**
 
-Challenges & Lessons
-The "Secure Context" Hurdle: I learned the hard way that modern computers won't let an app touch the microphone unless it's running in a "Secure Context" (like localhost or a signed app). This taught me a lot about desktop security permissions.
+This keeps the app fast, portable, and memory-efficient.
 
-TypeScript Rigor: Managing the difference between a MediaStream and a MediaRecorder was a great exercise in understanding how the Web Audio API actually flows.
+### The Brains — **Deepgram**
+- Model used: **Nova-2**
+- Reason: **Ultra-low latency**
 
-How I Tested It
-I didn't just check if it worked; I tried to break it.
+It feels like the app is typing **as you speak**, not after.
 
-The "Mouse Slip": If I click the button but drag my mouse away and let go, does it keep recording? (Fixed: Added onMouseLeave as a safety net).
+### The Face — **React**
+- Snappy UI
+- Simple state management
+- Rapid iteration
 
-The "Silent Treatment": If I hold the button but don't say anything, does the app crash? (Result: It stays stable and waits).
+---
 
-The "Airplane Mode" Test: I cut the Wi-Fi mid-speech to ensure the app gives a clear error message instead of just freezing.
+## Architectural Decisions (The “Human” Version)
+
+### 1. Why Push-to-Talk (PTT)?
+
+Instead of a simple On/Off toggle, I went with a **Hold-to-Speak** mechanism.
+
+**Reasoning:**
+- More intentional usage
+- Prevents accidental transcription
+- Avoids background or private conversations
+- Reduces API costs by sending audio only when needed
+
+---
+
+### 2. Keeping Audio in the Frontend
+
+I had two options:
+- Process audio in **Rust**
+- Process audio in **JavaScript**
+
+I chose **JavaScript’s MediaRecorder**.
+
+**Reasoning:**
+- Passing high-frequency audio data from WebView → Rust can introduce small delays
+- Connecting the frontend directly to Deepgram’s **WebSocket** makes transcription feel instant
+
+---
+
+### 3. Respecting Privacy (Hardware Cleanup)
+
+Sometimes, after stopping recording, the system still shows:
+> “Microphone in use”
+
+**Solution:**
+- Added a manual cleanup step
+- Explicitly stop and kill microphone tracks when the button is released
+
+**Why it matters:**
+- Builds user trust
+- Makes app behavior transparent
+- Respects privacy expectations
+
+---
+
+## Challenges & Lessons Learned
+
+### The “Secure Context” Hurdle
+Modern systems won’t allow microphone access unless the app runs in a **secure context**:
+- `localhost`
+- HTTPS
+- Signed desktop application
+
+This was a valuable lesson in desktop security and permission models.
+
+---
+
+### TypeScript Rigor
+Handling the difference between:
+- `MediaStream`
+- `MediaRecorder`
+
+forced a deeper understanding of:
+- Web Audio API flow
+- Strong typing
+- Real-time audio lifecycle
+
+---
+
+## How I Tested It
+
+I didn’t just test if it worked — I tried to **break it**.
+
+### The “Mouse Slip” Test
+**Scenario:**  
+Click the button, drag the mouse away, release.
+
+**Fix:**  
+- Added `onMouseLeave` as a safety net  
+- Recording stops reliably
+
+---
+
+### The “Silent Treatment”
+**Scenario:**  
+Hold the button but don’t speak.
+
+**Result:**  
+- App stays stable
+- Waits patiently
+- No crashes
+
+---
+
+### The “Airplane Mode” Test
+**Scenario:**  
+Turn off Wi-Fi mid-speech.
+
+**Result:**  
+- Clear error message
+- No freezing
+- Graceful failure
+
+---
+
+## Final Thoughts
+
+VoiceFlow is intentionally simple:
+- Fast
+- Lightweight
+- Privacy-aware
+- Built with care for real-world usage
+
+It’s proof that desktop apps don’t need to be heavy to be powerful.
+
