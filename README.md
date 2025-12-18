@@ -171,6 +171,6 @@ VITE_DEEPGRAM_API_KEY=your_key_here
 npm run tauri dev
 ```
 
-###THANK YOU
+### THANK YOU
 
 
