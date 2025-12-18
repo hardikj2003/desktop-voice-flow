@@ -144,11 +144,33 @@ Turn off Wi-Fi mid-speech.
 
 ## Final Thoughts
 
-VoiceFlow is intentionally simple:
-- Fast
-- Lightweight
-- Privacy-aware
-- Built with care for real-world usage
+VoiceFlow is intentionally simple:## Setup & Installation
 
-It’s proof that desktop apps don’t need to be heavy to be powerful.
+Follow these steps to run VoiceFlow locally.
+
+---
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/voiceflow.git
+cd voiceflow
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Set Up Environment Variables
+```bash
+VITE_DEEPGRAM_API_KEY=your_key_here
+```
+### 4. Run in Development Mode
+```bash
+npm run tauri dev
+```
+
+###THANK YOU
+
 
